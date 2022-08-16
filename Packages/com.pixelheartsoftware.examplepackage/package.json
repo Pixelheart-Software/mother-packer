@@ -1,0 +1,22 @@
+{
+  "name": "com.pixelheartsoftware.examplepackage",
+  "version": "0.0.2",
+  "displayName": "Package Example",
+  "description": "This is an example package",
+  "unity": "2020.3",
+  "unityRelease": "32f1",
+  "documentationUrl": "https://example.com/",
+  "changelogUrl": "https://example.com/changelog.html",
+  "licensesUrl": "https://example.com/licensing.html",
+ "keywords": [
+    "test"
+  ],
+  "author": {
+    "name": "Piotr Kaczmarski",
+    "email": "peter@pixelheartsoftware.com",
+    "url": "https://pixelheartsoftware.com"
+  },
+  "publishConfig": {
+	"registry": "http://localhost:4873"
+  }
+}
