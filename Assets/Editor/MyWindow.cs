@@ -6,10 +6,16 @@ using UnityEditor;
 
 public class WizardCreatePackage : ScriptableWizard
 {
-
+    [Header("Required Fields")] 
     public string companyName;
     public string packageName;
+
+    [Header("Optional Fields")] 
+    public bool addGitignoreFile;
     
+    [TextArea]
+    public string packageDescription;
+
     [MenuItem("MotherPacker/Create Package")]
     static void CreateWizard()
     {
@@ -18,41 +24,49 @@ public class WizardCreatePackage : ScriptableWizard
 
     void OnWizardCreate()
     {
-      
         var dataPath = Application.dataPath.Substring(0, Application.dataPath.Length - 6);
 
         var packagesPath = dataPath + "Packages";
 
         var packageDirName = "com." + this.companyName.ToLower() + "." + this.packageName.ToLower();
-        
+
         string packagePath = packagesPath + Path.DirectorySeparatorChar + packageDirName;
-        
+
         Directory.CreateDirectory(packagePath);
 
         var writer = File.CreateText(packagePath + Path.DirectorySeparatorChar + "package.json");
-        writer.Write(PACKAGE_JSON, this.companyName.ToLower(), this.packageName.ToLower());
+        writer.Write(PACKAGE_JSON, 
+            this.companyName.ToLower(), 
+            this.packageName.ToLower(),
+            this.packageDescription
+            );
         writer.Flush();
         writer.Close();
-        
+
         Directory.CreateDirectory(packagePath + Path.DirectorySeparatorChar + "Runtime");
-        Directory.CreateDirectory(packagePath + Path.DirectorySeparatorChar + "Runtime" + Path.DirectorySeparatorChar + "Scripts");
-        
-        writer = File.CreateText(packagePath + Path.DirectorySeparatorChar + "Runtime" + Path.DirectorySeparatorChar + "Test.asmdef");
+        Directory.CreateDirectory(packagePath + Path.DirectorySeparatorChar + "Runtime" + Path.DirectorySeparatorChar +
+                                  "Scripts");
+
+        writer = File.CreateText(packagePath + Path.DirectorySeparatorChar + "Runtime" + Path.DirectorySeparatorChar +
+                                 "Test.asmdef");
         writer.Write(ASMDEF, this.companyName.ToLower(), this.packageName.ToLower());
         writer.Flush();
         writer.Close();
 
-        var gitIgnoreFileName = packagesPath + Path.DirectorySeparatorChar + ".gitignore";
-        if (!File.Exists(gitIgnoreFileName))
+        if (addGitignoreFile)
         {
-            File.Create(gitIgnoreFileName);
-        }
+            var gitIgnoreFileName = packagesPath + Path.DirectorySeparatorChar + ".gitignore";
+            if (!File.Exists(gitIgnoreFileName))
+            {
+                File.Create(gitIgnoreFileName);
+            }
 
-        using (FileStream gitIgnoreStream = new FileStream(gitIgnoreFileName, FileMode.Append, FileAccess.Write))
-        using (var gitIgnoreWriter = new StreamWriter(gitIgnoreStream))
-        {
-            gitIgnoreWriter.WriteLine(packageDirName);
-            gitIgnoreWriter.Flush();
+            using (FileStream gitIgnoreStream = new FileStream(gitIgnoreFileName, FileMode.Append, FileAccess.Write))
+            using (var gitIgnoreWriter = new StreamWriter(gitIgnoreStream))
+            {
+                gitIgnoreWriter.WriteLine(packageDirName);
+                gitIgnoreWriter.Flush();
+            }
         }
     }
 
@@ -64,6 +78,7 @@ public class WizardCreatePackage : ScriptableWizard
             errorString = "Please fill in company name";
             return;
         }
+
         if (packageName == null || packageName.Trim().Equals(""))
         {
             errorString = "Please fill in package name";
@@ -79,7 +94,7 @@ public class WizardCreatePackage : ScriptableWizard
   ""name"": ""com.{0}.{1}"",
   ""version"": ""0.0.2"",
   ""displayName"": ""{1}"",
-  ""description"": ""This is an example package"",
+  ""description"": ""{2}"",
   ""unity"": ""2020.3"",
   ""unityRelease"": ""32f1"",
   ""documentationUrl"": ""https://example.com/"",
@@ -106,5 +121,4 @@ public class WizardCreatePackage : ScriptableWizard
   ""defineConstraints"": [],
   ""noEngineReferences"": false
 }}";
-
 }
