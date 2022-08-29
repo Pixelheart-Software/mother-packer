@@ -13,6 +13,18 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.mycomp.pack24": {
+      "version": "file:com.mycomp.pack24",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "com.mycomp.package23": {
+      "version": "file:com.mycomp.package23",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.pixelheartsoftware.examplepackage": {
       "version": "file:com.pixelheartsoftware.examplepackage",
       "depth": 0,
